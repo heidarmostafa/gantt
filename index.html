@@ -8,16 +8,42 @@
 			font-family: sans-serif;
 			background: #ccc;
 		}
+
 		.container {
 			width: 80%;
 			margin: 0 auto;
+			position: relative;
 		}
+
 		.gantt-container {
 			overflow: scroll;
 		}
+
 		/* custom class */
 		.gantt .bar-milestone .bar-progress {
 			fill: tomato;
+		}
+
+		#gantt-list {
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+
+		.gantt-list-container {
+			position: absolute;
+			left: 0;
+			top: 53px;
+		}
+
+		.child-node-text {
+			font-size: 12px;
+			fill: #666;
+		}
+
+		.parent-node-text {
+			font-size: 16px;
+			fill: #999;
 		}
 	</style>
 	<script src="node_modules/moment/min/moment.min.js"></script>
@@ -25,58 +51,153 @@
 	<script src="dist/frappe-gantt.js"></script>
 </head>
 <body>
-	<div class="container">
-		<h2>Interactive Gantt Chart entirely made in SVG!</h2>
-		<div class="gantt-container">
-			<svg id="gantt" width="400" height="600"></svg>
+<div class="container">
+	<h2>Interactive Gantt Chart entirely made in SVG!</h2>
+	<div class="gantt-container">
+		<svg id="gantt" width="400" height="600"></svg>
+		<div class="gantt-list-container">
+			<svg id="gantt-list" width="150" height="600"></svg>
 		</div>
 	</div>
-	<script>
-		var names = [
-			["Redesign website", [0, 7]],
-			["Write new content", [1, 4]],
-			["Apply new styles", [3, 6]],
-			["Review", [7, 7]],
-			["Deploy", [8, 9]],
-			["Go Live!", [10, 10]]
-		];
+</div>
+<script>
 
-		var tasks = names.map(function(name, i) {
-			var today = new Date();
-			var start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-			var end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-			start.setDate(today.getDate() + name[1][0]);
-			end.setDate(today.getDate() + name[1][1]);
-			return {
-				start: start,
-				end: end,
-				name: name[0],
-				id: "Task " + i,
-				progress: parseInt(Math.random() * 100, 10)
-			}
-		});
-		tasks[1].progress = 0;
-		tasks[1].dependencies = "Task 0"
-		tasks[2].dependencies = "Task 1"
-		tasks[3].dependencies = "Task 2"
-		tasks[5].dependencies = "Task 4"
-		tasks[5].custom_class = "bar-milestone";
+	var today = new Date();
 
-		var gantt_chart = Gantt("#gantt", tasks, {
-			on_click: function (task) {
-				console.log(task);
-			},
-			on_date_change: function(task, start, end) {
-				console.log(task, start, end);
-			},
-			on_progress_change: function(task, progress) {
-				console.log(task, progress);
-			},
-			on_view_change: function(mode) {
-				console.log(mode);
-			}
-		});
-		console.log(gantt_chart);
-	</script>
+	var start1 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	var end1 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	start1.setDate(today.getDate() +1);
+	end1.setDate(today.getDate() + 3);
+
+	var start2 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	var end2 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	start2.setDate(today.getDate() + 2);
+	end2.setDate(today.getDate() + 5);
+
+	var start3 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	var end3 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	start3.setDate(today.getDate() + 3);
+	end3.setDate(today.getDate() + 7);
+
+	var start4 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	var end4 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	start4.setDate(today.getDate() + 4);
+	end4.setDate(today.getDate() + 9);
+
+	var start5 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	var end5= new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	start5.setDate(today.getDate() + 5);
+	end5.setDate(today.getDate() + 12);
+
+	var start6 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	var end6 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	start6.setDate(today.getDate() + 10);
+	end6.setDate(today.getDate() + 13);
+
+	var projects = [
+		{
+			name: "project 1",
+			id: "project 1",
+			children: [
+				{
+					start: start1,
+					end: end1,
+					name: "Experiment 1-1",
+					id: "Experiment 1-1",
+					progress: parseInt(Math.random() * 100, 10)
+				},
+				{
+					start: start2,
+					end: end2,
+					name: "Experiment 1-2",
+					id: "Experiment 1-2",
+					progress: parseInt(Math.random() * 100, 10)
+				},
+				{
+					start: start3,
+					end: end3,
+					name: "Experiment 1-3",
+					id: "Experiment 1-3",
+					progress: parseInt(Math.random() * 100, 10)
+				}
+			]
+		},
+		{
+			name: "project 2",
+			children: [
+				{
+					start: start4,
+					end: end4,
+					name: "Experiment 2-1",
+					id: "Experiment 2-1",
+					progress: parseInt(Math.random() * 100, 10)
+				},
+				{
+					start: start5,
+					end: end5,
+					name: "Experiment 2-2",
+					id: "Experiment 2-2",
+					progress: parseInt(Math.random() * 100, 10)
+				},
+				{
+					start: start6,
+					end: end6,
+					name: "Experiment 3-3",
+					id: "Experiment 3-3",
+					progress: parseInt(Math.random() * 100, 10)
+				}
+			]
+		},
+	];
+
+	var names = [
+		["Redesign website", [0, 7]],
+		["Redesign website2", [0, 8]],
+		["Write new content", [1, 4]],
+		["Apply new styles", [3, 6]],
+		["Review", [7, 7]],
+		["Deploy", [8, 9]],
+		["Go Live!", [10, 10]]
+	];
+
+	/*    var tasks = names.map(function (name, i) {
+	 var today = new Date();
+	 var start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	 var end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+	 start.setDate(today.getDate() + name[1][0]);
+	 end.setDate(today.getDate() + name[1][1]);
+	 return {
+	 start: start,
+	 end: end,
+	 name: name[0],
+	 id: "Task " + i,
+	 progress: parseInt(Math.random() * 100, 10),
+	 customData: 'abc'
+	 }
+	 });
+	 tasks[1].progress = 0;
+	 tasks[1].dependencies = "Task 0"
+	 tasks[2].dependencies = "Task 1"
+	 tasks[3].dependencies = "Task 2"
+	 tasks[5].dependencies = "Task 4"
+	 tasks[5].custom_class = "bar-milestone";*/
+
+	var gantt_chart = Gantt("#gantt", projects, {
+		on_click: function (task) {
+			console.log(task);
+		},
+		on_date_change: function (task, start, end) {
+			console.log(task, start, end);
+		},
+		on_progress_change: function (task, progress) {
+			console.log(task, progress);
+		},
+		on_view_change: function (mode) {
+			console.log(mode);
+		}
+	}, "#gantt-list");
+	console.log(gantt_chart);
+	//setTimeout(function() {gantt_chart.refresh()}, 2000)
+</script>
 </body>
 </html>

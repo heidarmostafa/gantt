@@ -10,7 +10,6 @@
 export default function Bar(gt, task) {
 
 	const self = {};
-
 	function init() {
 		set_defaults();
 		prepare();
@@ -99,7 +98,7 @@ export default function Bar(gt, task) {
 	}
 
 	function draw_resize_handles() {
-		if (self.invalid) return;
+		if (self.invalid || self.task.isParent) return;
 
 		const bar = self.$bar,
 			handle_width = 8;
@@ -130,7 +129,7 @@ export default function Bar(gt, task) {
 	}
 
 	function bind() {
-		if (self.invalid) return;
+		if (self.invalid || self.task.isParent) return;
 		setup_click_event();
 		show_details();
 		bind_resize();
@@ -329,6 +328,7 @@ export default function Bar(gt, task) {
 		if (bar.finaldx) date_changed();
 		set_action_completed();
 		run_method_for_dependencies('onstop');
+		window.gantt_chart.refresh();
 	}
 	self.onstop_handle_left = onstop_handle_left;
 
@@ -352,6 +352,7 @@ export default function Bar(gt, task) {
 		const bar = self.$bar;
 		if (bar.finaldx) date_changed();
 		set_action_completed();
+		window.gantt_chart.refresh();
 	}
 
 	function update_bar_position({x = null, width = null}) {
@@ -399,6 +400,8 @@ export default function Bar(gt, task) {
 		const { new_start_date, new_end_date } = compute_start_end_date();
 		self.task._start = new_start_date;
 		self.task._end = new_end_date;
+		self.task.start = new Date(new_start_date._d);
+		self.task.end = new Date(new_end_date._d);
 		render_details();
 		gt.trigger_event('date_change',
 			[self.task, new_start_date, new_end_date]);
