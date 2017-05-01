@@ -151,7 +151,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    end: calculateParentEnd(t.children),
 	                    name: t.name,
 	                    id: t.id,
-	                    children: t.children
+	                    children: t.children,
+	                    gantt: self
 	                };
 	                allTasks.push(parent);
 	                t.children = t.children.map(function (c) {
@@ -476,7 +477,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!parent_element) return;
 	
 	        var scroll_pos = get_min_date().diff(self.gantt_start, 'hours') / self.config.step * self.config.column_width - self.config.column_width;
-	        parent_element.scrollLeft = scroll_pos;
+	        parent_element.scrollLeft = scroll_pos - 100;
 	    }
 	
 	    function get_min_date() {
@@ -1506,6 +1507,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		self.onstart = onstart;
 	
 		function onmove(dx, dy) {
+			console.log(222);
 			var bar = self.$bar;
 			bar.finaldx = get_snap_position(dx);
 			update_bar_position({ x: bar.ox + bar.finaldx });
@@ -1519,6 +1521,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			date_changed();
 			set_action_completed();
 			run_method_for_dependencies('onstop');
+			self.task.parent.gantt.refresh();
 		}
 		self.onstop = onstop;
 	
@@ -1538,7 +1541,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			if (bar.finaldx) date_changed();
 			set_action_completed();
 			run_method_for_dependencies('onstop');
-			window.gantt_chart.refresh();
+			self.task.parent.gantt.refresh();
 		}
 		self.onstop_handle_left = onstop_handle_left;
 	
@@ -1583,7 +1586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			var bar = self.$bar;
 			if (bar.finaldx) date_changed();
 			set_action_completed();
-			window.gantt_chart.refresh();
+			self.task.parent.gantt.refresh();
 		}
 	
 		function update_bar_position(_ref) {

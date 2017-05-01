@@ -84,7 +84,8 @@ export default function Gantt(element, tasks, config, lhsList) {
                 end: calculateParentEnd(t.children),
                 name: t.name,
                 id: t.id,
-                children: t.children
+                children: t.children,
+                gantt: self
             };
             allTasks.push(parent);
             t.children = t.children.map((c) => {
@@ -307,7 +308,7 @@ export default function Gantt(element, tasks, config, lhsList) {
 
         const scroll_pos = get_min_date().diff(self.gantt_start, 'hours') /
             self.config.step * self.config.column_width - self.config.column_width;
-        parent_element.scrollLeft = scroll_pos;
+        parent_element.scrollLeft = scroll_pos - 100;
     }
 
     function get_min_date() {

@@ -296,6 +296,7 @@ export default function Bar(gt, task) {
 	self.onstart = onstart;
 
 	function onmove(dx, dy) {
+		console.log(222);
 		const bar = self.$bar;
 		bar.finaldx = get_snap_position(dx);
 		update_bar_position({x: bar.ox + bar.finaldx});
@@ -309,6 +310,7 @@ export default function Bar(gt, task) {
 		date_changed();
 		set_action_completed();
 		run_method_for_dependencies('onstop');
+		self.task.parent.gantt.refresh();
 	}
 	self.onstop = onstop;
 
@@ -328,7 +330,7 @@ export default function Bar(gt, task) {
 		if (bar.finaldx) date_changed();
 		set_action_completed();
 		run_method_for_dependencies('onstop');
-		window.gantt_chart.refresh();
+		self.task.parent.gantt.refresh();
 	}
 	self.onstop_handle_left = onstop_handle_left;
 
@@ -352,7 +354,7 @@ export default function Bar(gt, task) {
 		const bar = self.$bar;
 		if (bar.finaldx) date_changed();
 		set_action_completed();
-		window.gantt_chart.refresh();
+		self.task.parent.gantt.refresh();
 	}
 
 	function update_bar_position({x = null, width = null}) {
