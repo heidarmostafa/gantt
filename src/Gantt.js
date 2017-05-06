@@ -1,4 +1,5 @@
-/* global moment, Snap */
+import moment from 'moment';
+import Snap from 'snapsvg';
 /**
  * Gantt:
  *    element: querySelector string, required

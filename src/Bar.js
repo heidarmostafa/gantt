@@ -1,4 +1,4 @@
-/* global Snap */
+import Snap from 'snapsvg';
 /*
 	Class: Bar
 
