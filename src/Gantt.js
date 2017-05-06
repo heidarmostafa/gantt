@@ -1,4 +1,5 @@
 import moment from 'moment';
+console.log('xxxxxx', moment);
 import Snap from 'snapsvg';
 /**
  * Gantt:
