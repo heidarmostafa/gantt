@@ -45,6 +45,7 @@
   },
   "homepage": "https://github.com/frappe/gantt",
   "dependencies": {
+    "legacy-loader": "0.0.2",
     "moment": "^2.18.1",
     "snapsvg": "^0.4.0"
   }

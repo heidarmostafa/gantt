@@ -1,6 +1,6 @@
 import moment from 'moment';
-console.log('xxxxxx', moment);
-import Snap from 'snapsvg';
+var Snap = require('legacy-loader?exports=Snap!snapsvg');
+console.log('iiiii', Snap);
 /**
  * Gantt:
  *    element: querySelector string, required

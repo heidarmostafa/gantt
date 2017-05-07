@@ -1,4 +1,4 @@
-import Snap from 'snapsvg';
+var Snap = require('legacy-loader?exports=Snap!snapsvg');
 /*
 	Class: Bar
 

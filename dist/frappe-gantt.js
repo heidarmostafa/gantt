@@ -65,23 +65,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _moment2 = _interopRequireDefault(_moment);
 	
-	var _snapsvg = __webpack_require__(119);
+	__webpack_require__(119);
 	
-	var _snapsvg2 = _interopRequireDefault(_snapsvg);
-	
-	__webpack_require__(120);
-	
-	var _Bar = __webpack_require__(124);
+	var _Bar = __webpack_require__(123);
 	
 	var _Bar2 = _interopRequireDefault(_Bar);
 	
-	var _Arrow = __webpack_require__(125);
+	var _Arrow = __webpack_require__(126);
 	
 	var _Arrow2 = _interopRequireDefault(_Arrow);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	console.log('xxxxxx', _moment2.default);
+	var Snap = __webpack_require__(124);
+	console.log('iiiii', Snap);
 	/**
 	 * Gantt:
 	 *    element: querySelector string, required
@@ -375,8 +372,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    function prepare_canvas() {
 	        // if (self.canvas && self.lhsList) return;
-	        self.canvas = (0, _snapsvg2.default)(self.element).addClass('gantt');
-	        self.lhsList = (0, _snapsvg2.default)(self.lhsList).addClass('gantt-list');
+	        self.canvas = Snap(self.element).addClass('gantt');
+	        self.lhsList = Snap(self.lhsList).addClass('gantt-list');
 	    }
 	
 	    function render() {
@@ -600,7 +597,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    tick_class += ' thick';
 	                }
 	
-	                self.canvas.path(_snapsvg2.default.format('M {x} {y} v {height}', {
+	                self.canvas.path(Snap.format('M {x} {y} v {height}', {
 	                    x: tick_x,
 	                    y: tick_y,
 	                    height: tick_height
@@ -16716,7 +16713,911 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_LOCAL_MODULE_0__;var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Snap.svg 0.4.0
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(120);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(122)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js?sourceMap!../node_modules/sass-loader/index.js?sourceMap!./gantt.scss", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js?sourceMap!../node_modules/sass-loader/index.js?sourceMap!./gantt.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 120 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(121)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, ".gantt .grid-background {\n  fill: none; }\n\n.gantt .grid-header {\n  fill: #ffffff;\n  stroke: #e0e0e0;\n  stroke-width: 1.4; }\n\n.gantt .grid-row {\n  fill: #ffffff; }\n\n.gantt .grid-row:nth-child(even) {\n  fill: #f5f5f5; }\n\n.gantt .row-line {\n  stroke: #ebeff2; }\n\n.gantt .tick {\n  stroke: #e0e0e0;\n  stroke-width: 0.2; }\n  .gantt .tick.thick {\n    stroke-width: 0.4; }\n\n.gantt .today-highlight {\n  fill: #fcf8e3;\n  opacity: 0.5; }\n\n.gantt #arrow {\n  fill: none;\n  stroke: #666;\n  stroke-width: 1.4; }\n\n.gantt .bar {\n  fill: #b8c2cc;\n  stroke: #8D99A6;\n  stroke-width: 0;\n  transition: stroke-width .3s ease; }\n\n.gantt .bar-progress {\n  fill: #a3a3ff; }\n\n.gantt .bar-invalid {\n  fill: transparent;\n  stroke: #8D99A6;\n  stroke-width: 1;\n  stroke-dasharray: 5; }\n  .gantt .bar-invalid ~ .bar-label {\n    fill: #555; }\n\n.gantt .bar-label {\n  fill: #fff;\n  dominant-baseline: central;\n  text-anchor: middle;\n  font-size: 12px;\n  font-weight: lighter;\n  letter-spacing: 0.8px; }\n  .gantt .bar-label.big {\n    fill: #555;\n    text-anchor: start; }\n\n.gantt .handle {\n  fill: #ddd;\n  cursor: ew-resize;\n  opacity: 0;\n  visibility: hidden;\n  transition: opacity .3s ease; }\n\n.gantt .bar-wrapper {\n  cursor: pointer; }\n  .gantt .bar-wrapper:hover .bar {\n    stroke-width: 2; }\n  .gantt .bar-wrapper:hover .handle {\n    visibility: visible;\n    opacity: 1; }\n  .gantt .bar-wrapper.active .bar {\n    stroke-width: 2; }\n\n.gantt .lower-text, .gantt .upper-text {\n  font-size: 12px;\n  text-anchor: middle; }\n\n.gantt .upper-text {\n  fill: #555; }\n\n.gantt .lower-text {\n  fill: #333; }\n\n.gantt #details .details-container {\n  background: #fff;\n  display: inline-block;\n  padding: 12px; }\n  .gantt #details .details-container h5, .gantt #details .details-container p {\n    margin: 0; }\n  .gantt #details .details-container h5 {\n    font-size: 12px;\n    font-weight: bold;\n    margin-bottom: 10px;\n    color: #555; }\n  .gantt #details .details-container p {\n    font-size: 12px;\n    margin-bottom: 6px;\n    color: #666; }\n  .gantt #details .details-container p:last-child {\n    margin-bottom: 0; }\n\n.gantt .hide {\n  display: none; }\n", "", {"version":3,"sources":["/home/heidar/projects/gantt-fork/src/src/gantt.scss"],"names":[],"mappings":"AAYA;EAGE,WAAU,EACV;;AAJF;EAME,cAAa;EACb,gBAjBoB;EAkBpB,kBAAiB,EACjB;;AATF;EAWE,cAAa,EACb;;AAZF;EAcE,cAvBgB,EAwBhB;;AAfF;EAiBE,gBAzB0B,EA0B1B;;AAlBF;EAoBE,gBA9BoB;EA+BpB,kBAAiB,EAIjB;EAzBF;IAuBG,kBAAiB,EACjB;;AAxBH;EA2BE,cAlCoB;EAmCpB,aAAY,EACZ;;AA7BF;EAgCE,WAAU;EACV,aAvCe;EAwCf,kBAAiB,EACjB;;AAnCF;EAsCE,cAlDiB;EAmDjB,gBAlDkB;EAmDlB,gBAAe;EACf,kCAAiC,EACjC;;AA1CF;EA4CE,cA/CY,EAgDZ;;AA7CF;EA+CE,kBAAiB;EACjB,gBA3DkB;EA4DlB,gBAAe;EACf,oBAAmB,EAKnB;EAvDF;IAqDG,WA1Dc,EA2Dd;;AAtDH;EAyDE,WAAU;EACV,2BAA0B;EAC1B,oBAAmB;EACnB,gBAAe;EACf,qBAAoB;EACpB,sBAAqB,EAMrB;EApEF;IAiEG,WAtEc;IAuEd,mBAAkB,EAClB;;AAnEH;EAuEE,WAzEiB;EA0EjB,kBAAiB;EACjB,WAAU;EACV,mBAAkB;EAClB,6BAA4B,EAC5B;;AA5EF;EA+EE,gBAAe,EAkBf;EAjGF;IAmFI,gBAAe,EACf;EApFJ;IAuFI,oBAAmB;IACnB,WAAU,EACV;EAzFJ;IA8FI,gBAAe,EACf;;AA/FJ;EAoGE,gBAAe;EACf,oBAAmB,EACnB;;AAtGF;EAwGE,WA7Ge,EA8Gf;;AAzGF;EA2GE,WA/Ge,EAgHf;;AA5GF;EA+GE,iBAAgB;EAChB,sBAAqB;EACrB,cAAa,EAsBb;EAvIF;IAoHG,UAAS,EACT;EArHH;IAwHG,gBAAe;IACf,kBAAiB;IACjB,oBAAmB;IACnB,YAhIc,EAiId;EA5HH;IA+HG,gBAAe;IACf,mBAAkB;IAClB,YAvIc,EAwId;EAlIH;IAqIG,iBAAgB,EAChB;;AAtIH;EA0IE,cAAa,EACb","file":"gantt.scss","sourcesContent":["$bar-color: #b8c2cc;\n$bar-stroke: #8D99A6;\n$border-color: #e0e0e0;\n$light-bg: #f5f5f5;\n$light-border-color: #ebeff2;\n$light-yellow: #fcf8e3;\n$text-muted: #666;\n$text-light: #555;\n$text-color: #333;\n$blue: #a3a3ff;\n$handle-color: #ddd;\n\n.gantt {\n\n\t.grid-background {\n\t\tfill: none;\n\t}\n\t.grid-header {\n\t\tfill: #ffffff;\n\t\tstroke: $border-color;\n\t\tstroke-width: 1.4;\n\t}\n\t.grid-row {\n\t\tfill: #ffffff;\n\t}\n\t.grid-row:nth-child(even) {\n\t\tfill: $light-bg;\n\t}\n\t.row-line {\n\t\tstroke: $light-border-color;\n\t}\n\t.tick {\n\t\tstroke: $border-color;\n\t\tstroke-width: 0.2;\n\t\t&.thick {\n\t\t\tstroke-width: 0.4;\n\t\t}\n\t}\n\t.today-highlight {\n\t\tfill: $light-yellow;\n\t\topacity: 0.5;\n\t}\n\n\t#arrow {\n\t\tfill: none;\n\t\tstroke: $text-muted;\n\t\tstroke-width: 1.4;\n\t}\n\n\t.bar {\n\t\tfill: $bar-color;\n\t\tstroke: $bar-stroke;\n\t\tstroke-width: 0;\n\t\ttransition: stroke-width .3s ease;\n\t}\n\t.bar-progress {\n\t\tfill: $blue;\n\t}\n\t.bar-invalid {\n\t\tfill: transparent;\n\t\tstroke: $bar-stroke;\n\t\tstroke-width: 1;\n\t\tstroke-dasharray: 5;\n\n\t\t&~.bar-label {\n\t\t\tfill: $text-light;\n\t\t}\n\t}\n\t.bar-label {\n\t\tfill: #fff;\n\t\tdominant-baseline: central;\n\t\ttext-anchor: middle;\n\t\tfont-size: 12px;\n\t\tfont-weight: lighter;\n\t\tletter-spacing: 0.8px;\n\n\t\t&.big {\n\t\t\tfill: $text-light;\n\t\t\ttext-anchor: start;\n\t\t}\n\t}\n\n\t.handle {\n\t\tfill: $handle-color;\n\t\tcursor: ew-resize;\n\t\topacity: 0;\n\t\tvisibility: hidden;\n\t\ttransition: opacity .3s ease;\n\t}\n\n\t.bar-wrapper {\n\t\tcursor: pointer;\n\n\t\t&:hover {\n\t\t\t.bar {\n\t\t\t\tstroke-width: 2;\n\t\t\t}\n\n\t\t\t.handle {\n\t\t\t\tvisibility: visible;\n\t\t\t\topacity: 1;\n\t\t\t}\n\t\t}\n\n\t\t&.active {\n\t\t\t.bar {\n\t\t\t\tstroke-width: 2;\n\t\t\t}\n\t\t}\n\t}\n\n\t.lower-text, .upper-text {\n\t\tfont-size: 12px;\n\t\ttext-anchor: middle;\n\t}\n\t.upper-text {\n\t\tfill: $text-light;\n\t}\n\t.lower-text {\n\t\tfill: $text-color;\n\t}\n\n\t#details .details-container {\n\t\tbackground: #fff;\n\t\tdisplay: inline-block;\n\t\tpadding: 12px;\n\n\t\th5, p {\n\t\t\tmargin: 0;\n\t\t}\n\n\t\th5 {\n\t\t\tfont-size: 12px;\n\t\t\tfont-weight: bold;\n\t\t\tmargin-bottom: 10px;\n\t\t\tcolor: $text-light;\n\t\t}\n\n\t\tp {\n\t\t\tfont-size: 12px;\n\t\t\tmargin-bottom: 6px;\n\t\t\tcolor: $text-muted;\n\t\t}\n\n\t\tp:last-child {\n\t\t\tmargin-bottom: 0;\n\t\t}\n\t}\n\n\t.hide {\n\t\tdisplay: none;\n\t}\n}"],"sourceRoot":""}]);
+	
+	// exports
+
+
+/***/ },
+/* 121 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+	
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+	
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 122 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+	
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+	
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+	
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+	
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+	
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+	
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+	
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+	
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+	
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+	
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+	
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+	
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+	
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+	
+		update(obj);
+	
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+	
+	var replaceText = (function () {
+		var textStore = [];
+	
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+	
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+	
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+	
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+	
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+	
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+	
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+	
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+	
+		var blob = new Blob([css], { type: "text/css" });
+	
+		var oldSrc = linkElement.href;
+	
+		linkElement.href = URL.createObjectURL(blob);
+	
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 123 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	exports.default = Bar;
+	var Snap = __webpack_require__(124);
+	/*
+		Class: Bar
+	
+		Opts:
+			gt: Gantt object
+			task: task object
+	*/
+	
+	function Bar(gt, task) {
+	
+		var self = {};
+		function init() {
+			set_defaults();
+			prepare();
+			draw();
+			bind();
+		}
+	
+		function set_defaults() {
+			self.action_completed = false;
+			self.task = task;
+		}
+	
+		function prepare() {
+			prepare_values();
+			prepare_plugins();
+		}
+	
+		function prepare_values() {
+			self.invalid = self.task.invalid;
+			self.height = gt.config.bar.height;
+			self.x = compute_x();
+			self.y = compute_y();
+			self.corner_radius = 3;
+			self.duration = (self.task._end.diff(self.task._start, 'hours') + 24) / gt.config.step;
+			self.width = gt.config.column_width * self.duration;
+			self.progress_width = gt.config.column_width * self.duration * (self.task.progress / 100) || 0;
+			self.group = gt.canvas.group().addClass('bar-wrapper').addClass(self.task.custom_class || '');
+			self.bar_group = gt.canvas.group().addClass('bar-group').appendTo(self.group);
+			self.handle_group = gt.canvas.group().addClass('handle-group').appendTo(self.group);
+		}
+	
+		function prepare_plugins() {
+			Snap.plugin(function (Snap, Element, Paper, global, Fragment) {
+				Element.prototype.getX = function () {
+					return +this.attr('x');
+				};
+				Element.prototype.getY = function () {
+					return +this.attr('y');
+				};
+				Element.prototype.getWidth = function () {
+					return +this.attr('width');
+				};
+				Element.prototype.getHeight = function () {
+					return +this.attr('height');
+				};
+				Element.prototype.getEndX = function () {
+					return this.getX() + this.getWidth();
+				};
+			});
+		}
+	
+		function draw() {
+			draw_bar();
+			draw_progress_bar();
+			draw_label();
+			draw_resize_handles();
+		}
+	
+		function draw_bar() {
+			self.$bar = gt.canvas.rect(self.x, self.y, self.width, self.height, self.corner_radius, self.corner_radius).addClass('bar').appendTo(self.bar_group);
+			if (self.invalid) {
+				self.$bar.addClass('bar-invalid');
+			}
+		}
+	
+		function draw_progress_bar() {
+			if (self.invalid) return;
+			self.$bar_progress = gt.canvas.rect(self.x, self.y, self.progress_width, self.height, self.corner_radius, self.corner_radius).addClass('bar-progress').appendTo(self.bar_group);
+		}
+	
+		function draw_label() {
+			gt.canvas.text(self.x + self.width / 2, self.y + self.height / 2, self.task.name).addClass('bar-label').appendTo(self.bar_group);
+			update_label_position();
+		}
+	
+		function draw_resize_handles() {
+			if (self.invalid || self.task.isParent) return;
+	
+			var bar = self.$bar,
+			    handle_width = 8;
+	
+			gt.canvas.rect(bar.getX() + bar.getWidth() - 9, bar.getY() + 1, handle_width, self.height - 2, self.corner_radius, self.corner_radius).addClass('handle right').appendTo(self.handle_group);
+			gt.canvas.rect(bar.getX() + 1, bar.getY() + 1, handle_width, self.height - 2, self.corner_radius, self.corner_radius).addClass('handle left').appendTo(self.handle_group);
+	
+			if (self.task.progress && self.task.progress < 100) {
+				gt.canvas.polygon(get_progress_polygon_points()).addClass('handle progress').appendTo(self.handle_group);
+			}
+		}
+	
+		function get_progress_polygon_points() {
+			var bar_progress = self.$bar_progress;
+			return [bar_progress.getEndX() - 5, bar_progress.getY() + bar_progress.getHeight(), bar_progress.getEndX() + 5, bar_progress.getY() + bar_progress.getHeight(), bar_progress.getEndX(), bar_progress.getY() + bar_progress.getHeight() - 8.66];
+		}
+	
+		function bind() {
+			if (self.invalid || self.task.isParent) return;
+			setup_click_event();
+			show_details();
+			bind_resize();
+			bind_drag();
+			bind_resize_progress();
+		}
+	
+		function show_details() {
+			var popover_group = gt.element_groups.details;
+			self.details_box = popover_group.select('.details-wrapper[data-task=\'' + self.task.id + '\']');
+	
+			if (!self.details_box) {
+				self.details_box = gt.canvas.group().addClass('details-wrapper hide').attr('data-task', self.task.id).appendTo(popover_group);
+	
+				render_details();
+	
+				var f = gt.canvas.filter(Snap.filter.shadow(0, 1, 1, '#666', 0.6));
+				self.details_box.attr({
+					filter: f
+				});
+			}
+	
+			self.group.click(function (e) {
+				if (self.action_completed) {
+					// just finished a move action, wait for a few seconds
+					return;
+				}
+				popover_group.selectAll('.details-wrapper').forEach(function (el) {
+					return el.addClass('hide');
+				});
+				self.details_box.removeClass('hide');
+			});
+		}
+	
+		function render_details() {
+			var _get_details_position = get_details_position(),
+			    x = _get_details_position.x,
+			    y = _get_details_position.y;
+	
+			self.details_box.transform('t' + x + ',' + y);
+			self.details_box.clear();
+	
+			var html = get_details_html();
+			var foreign_object = Snap.parse('<foreignObject width="5000" height="2000">\n\t\t\t\t<body xmlns="http://www.w3.org/1999/xhtml">\n\t\t\t\t\t' + html + '\n\t\t\t\t</body>\n\t\t\t\t</foreignObject>');
+			self.details_box.append(foreign_object);
+		}
+	
+		function get_details_html() {
+	
+			// custom html in config
+			if (gt.config.custom_popup_html) {
+				var _html = gt.config.custom_popup_html;
+				if (typeof _html === 'string') {
+					return _html;
+				}
+				if (isFunction(_html)) {
+					return _html(task);
+				}
+			}
+	
+			var start_date = self.task._start.format('MMM D');
+			var end_date = self.task._end.format('MMM D');
+			var heading = self.task.name + ': ' + start_date + ' - ' + end_date;
+	
+			var line_1 = 'Duration: ' + self.duration + ' days';
+			var line_2 = self.task.progress ? 'Progress: ' + self.task.progress : null;
+	
+			var html = '\n\t\t\t<div class="details-container">\n\t\t\t\t<h5>' + heading + '</h5>\n\t\t\t\t<p>' + line_1 + '</p>\n\t\t\t\t' + (line_2 ? '<p>' + line_2 + '</p>' : '') + '\n\t\t\t</div>\n\t\t';
+			return html;
+		}
+	
+		function get_details_position() {
+			return {
+				x: self.$bar.getEndX() + 2,
+				y: self.$bar.getY() - 10
+			};
+		}
+	
+		function bind_resize() {
+			var _get_handles = get_handles(),
+			    left = _get_handles.left,
+			    right = _get_handles.right;
+	
+			left.drag(onmove_left, onstart, onstop_left);
+			right.drag(onmove_right, onstart, onstop_right);
+	
+			function onmove_right(dx, dy) {
+				onmove_handle_right(dx, dy);
+			}
+			function onstop_right() {
+				onstop_handle_right();
+			}
+	
+			function onmove_left(dx, dy) {
+				onmove_handle_left(dx, dy);
+			}
+			function onstop_left() {
+				onstop_handle_left();
+			}
+		}
+	
+		function get_handles() {
+			return {
+				left: self.handle_group.select('.handle.left'),
+				right: self.handle_group.select('.handle.right')
+			};
+		}
+	
+		function bind_drag() {
+			self.bar_group.drag(onmove, onstart, onstop);
+		}
+	
+		function bind_resize_progress() {
+			var bar = self.$bar,
+			    bar_progress = self.$bar_progress,
+			    handle = self.group.select('.handle.progress');
+			handle && handle.drag(on_move, on_start, on_stop);
+	
+			function on_move(dx, dy) {
+				if (dx > bar_progress.max_dx) {
+					dx = bar_progress.max_dx;
+				}
+				if (dx < bar_progress.min_dx) {
+					dx = bar_progress.min_dx;
+				}
+	
+				bar_progress.attr('width', bar_progress.owidth + dx);
+				handle.attr('points', get_progress_polygon_points());
+				bar_progress.finaldx = dx;
+			}
+			function on_stop() {
+				if (!bar_progress.finaldx) return;
+				progress_changed();
+				set_action_completed();
+			}
+			function on_start() {
+				bar_progress.finaldx = 0;
+				bar_progress.owidth = bar_progress.getWidth();
+				bar_progress.min_dx = -bar_progress.getWidth();
+				bar_progress.max_dx = bar.getWidth() - bar_progress.getWidth();
+			}
+		}
+	
+		function onstart() {
+			var bar = self.$bar;
+			bar.ox = bar.getX();
+			bar.oy = bar.getY();
+			bar.owidth = bar.getWidth();
+			bar.finaldx = 0;
+			run_method_for_dependencies('onstart');
+		}
+		self.onstart = onstart;
+	
+		function onmove(dx, dy) {
+			console.log(222);
+			var bar = self.$bar;
+			bar.finaldx = get_snap_position(dx);
+			update_bar_position({ x: bar.ox + bar.finaldx });
+			run_method_for_dependencies('onmove', [dx, dy]);
+		}
+		self.onmove = onmove;
+	
+		function onstop() {
+			var bar = self.$bar;
+			if (!bar.finaldx) return;
+			date_changed();
+			set_action_completed();
+			run_method_for_dependencies('onstop');
+			self.task.parent.gantt.refresh();
+		}
+		self.onstop = onstop;
+	
+		function onmove_handle_left(dx, dy) {
+			var bar = self.$bar;
+			bar.finaldx = get_snap_position(dx);
+			update_bar_position({
+				x: bar.ox + bar.finaldx,
+				width: bar.owidth - bar.finaldx
+			});
+			run_method_for_dependencies('onmove', [dx, dy]);
+		}
+		self.onmove_handle_left = onmove_handle_left;
+	
+		function onstop_handle_left() {
+			var bar = self.$bar;
+			if (bar.finaldx) date_changed();
+			set_action_completed();
+			run_method_for_dependencies('onstop');
+			self.task.parent.gantt.refresh();
+		}
+		self.onstop_handle_left = onstop_handle_left;
+	
+		function run_method_for_dependencies(fn, args) {
+			var dm = gt.dependency_map;
+			if (dm[self.task.id]) {
+				var _iteratorNormalCompletion = true;
+				var _didIteratorError = false;
+				var _iteratorError = undefined;
+	
+				try {
+					for (var _iterator = dm[self.task.id][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+						var deptask = _step.value;
+	
+						var dt = gt.get_bar(deptask);
+						dt[fn].apply(dt, args);
+					}
+				} catch (err) {
+					_didIteratorError = true;
+					_iteratorError = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion && _iterator.return) {
+							_iterator.return();
+						}
+					} finally {
+						if (_didIteratorError) {
+							throw _iteratorError;
+						}
+					}
+				}
+			}
+		}
+	
+		function onmove_handle_right(dx, dy) {
+			var bar = self.$bar;
+			bar.finaldx = get_snap_position(dx);
+			update_bar_position({ width: bar.owidth + bar.finaldx });
+		}
+	
+		function onstop_handle_right() {
+			var bar = self.$bar;
+			if (bar.finaldx) date_changed();
+			set_action_completed();
+			self.task.parent.gantt.refresh();
+		}
+	
+		function update_bar_position(_ref) {
+			var _ref$x = _ref.x,
+			    x = _ref$x === undefined ? null : _ref$x,
+			    _ref$width = _ref.width,
+			    width = _ref$width === undefined ? null : _ref$width;
+	
+			var bar = self.$bar;
+			if (x) {
+				// get all x values of parent task
+				var xs = task.dependencies.map(function (dep) {
+					return gt.get_bar(dep).$bar.getX();
+				});
+				// child task must not go before parent
+				var valid_x = xs.reduce(function (prev, curr) {
+					return x >= curr;
+				}, x);
+				if (!valid_x) {
+					width = null;
+					return;
+				}
+				update_attr(bar, 'x', x);
+			}
+			if (width && width >= gt.config.column_width) {
+				update_attr(bar, 'width', width);
+			}
+			update_label_position();
+			update_handle_position();
+			update_progressbar_position();
+			update_arrow_position();
+			update_details_position();
+		}
+	
+		function setup_click_event() {
+			self.group.click(function () {
+				if (self.action_completed) {
+					// just finished a move action, wait for a few seconds
+					return;
+				}
+				if (self.group.hasClass('active')) {
+					gt.trigger_event('click', [self.task]);
+				}
+				gt.unselect_all();
+				self.group.toggleClass('active');
+			});
+		}
+	
+		function date_changed() {
+			var _compute_start_end_da = compute_start_end_date(),
+			    new_start_date = _compute_start_end_da.new_start_date,
+			    new_end_date = _compute_start_end_da.new_end_date;
+	
+			self.task._start = new_start_date;
+			self.task._end = new_end_date;
+			self.task.start = new Date(new_start_date._d);
+			self.task.end = new Date(new_end_date._d);
+			render_details();
+			gt.trigger_event('date_change', [self.task, new_start_date, new_end_date]);
+		}
+	
+		function progress_changed() {
+			var new_progress = compute_progress();
+			self.task.progress = new_progress;
+			render_details();
+			gt.trigger_event('progress_change', [self.task, new_progress]);
+		}
+	
+		function set_action_completed() {
+			self.action_completed = true;
+			setTimeout(function () {
+				return self.action_completed = false;
+			}, 2000);
+		}
+	
+		function compute_start_end_date() {
+			var bar = self.$bar;
+			var x_in_units = bar.getX() / gt.config.column_width;
+			var new_start_date = gt.gantt_start.clone().add(x_in_units * gt.config.step, 'hours');
+			var width_in_units = bar.getWidth() / gt.config.column_width;
+			var new_end_date = new_start_date.clone().add(width_in_units * gt.config.step, 'hours');
+			return { new_start_date: new_start_date, new_end_date: new_end_date };
+		}
+	
+		function compute_progress() {
+			var progress = self.$bar_progress.getWidth() / self.$bar.getWidth() * 100;
+			return parseInt(progress, 10);
+		}
+	
+		function compute_x() {
+			var x = self.task._start.diff(gt.gantt_start, 'hours') / gt.config.step * gt.config.column_width;
+	
+			if (gt.view_is('Month')) {
+				x = self.task._start.diff(gt.gantt_start, 'days') * gt.config.column_width / 30;
+			}
+			return x;
+		}
+	
+		function compute_y() {
+			return gt.config.header_height + gt.config.padding + self.task._index * (self.height + gt.config.padding);
+		}
+	
+		function get_snap_position(dx) {
+			var odx = dx,
+			    rem = void 0,
+			    position = void 0;
+	
+			if (gt.view_is('Week')) {
+				rem = dx % (gt.config.column_width / 7);
+				position = odx - rem + (rem < gt.config.column_width / 14 ? 0 : gt.config.column_width / 7);
+			} else if (gt.view_is('Month')) {
+				rem = dx % (gt.config.column_width / 30);
+				position = odx - rem + (rem < gt.config.column_width / 60 ? 0 : gt.config.column_width / 30);
+			} else {
+				rem = dx % gt.config.column_width;
+				position = odx - rem + (rem < gt.config.column_width / 2 ? 0 : gt.config.column_width);
+			}
+			return position;
+		}
+	
+		function update_attr(element, attr, value) {
+			value = +value;
+			if (!isNaN(value)) {
+				element.attr(attr, value);
+			}
+			return element;
+		}
+	
+		function update_progressbar_position() {
+			self.$bar_progress.attr('x', self.$bar.getX());
+			self.$bar_progress.attr('width', self.$bar.getWidth() * (self.task.progress / 100));
+		}
+	
+		function update_label_position() {
+			var bar = self.$bar,
+			    label = self.group.select('.bar-label');
+			if (label.getBBox().width > bar.getWidth()) {
+				label.addClass('big').attr('x', bar.getX() + bar.getWidth() + 5);
+			} else {
+				label.removeClass('big').attr('x', bar.getX() + bar.getWidth() / 2);
+			}
+		}
+	
+		function update_handle_position() {
+			var bar = self.$bar;
+			self.handle_group.select('.handle.left').attr({
+				'x': bar.getX() + 1
+			});
+			self.handle_group.select('.handle.right').attr({
+				'x': bar.getEndX() - 9
+			});
+			var handle = self.group.select('.handle.progress');
+			handle && handle.attr('points', get_progress_polygon_points());
+		}
+	
+		function update_arrow_position() {
+			var _iteratorNormalCompletion2 = true;
+			var _didIteratorError2 = false;
+			var _iteratorError2 = undefined;
+	
+			try {
+				for (var _iterator2 = self.arrows[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+					var arrow = _step2.value;
+	
+					arrow.update();
+				}
+			} catch (err) {
+				_didIteratorError2 = true;
+				_iteratorError2 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion2 && _iterator2.return) {
+						_iterator2.return();
+					}
+				} finally {
+					if (_didIteratorError2) {
+						throw _iteratorError2;
+					}
+				}
+			}
+		}
+	
+		function update_details_position() {
+			var _get_details_position2 = get_details_position(),
+			    x = _get_details_position2.x,
+			    y = _get_details_position2.y;
+	
+			self.details_box && self.details_box.transform('t' + x + ',' + y);
+		}
+	
+		function isFunction(functionToCheck) {
+			var getType = {};
+			return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+		}
+	
+		init();
+	
+		return self;
+	}
+	module.exports = exports['default'];
+
+/***/ },
+/* 124 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var windowShim = Object.create(window);
+	
+	(function (window, module, exports, define) {
+	// Snap.svg 0.4.0
 	// 
 	// Copyright (c) 2013 – 2015 Adobe Systems Incorporated. All rights reserved.
 	// 
@@ -17135,19 +18036,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    eve.toString = function () {
 	        return "You are running Eve " + version;
 	    };
-	    (typeof module != "undefined" && module.exports) ? (module.exports = eve) : ( true ? (!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_LOCAL_MODULE_0__ = (function() { return eve; }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)))) : (glob.eve = eve));
+	    (typeof module != "undefined" && module.exports) ? (module.exports = eve) : (typeof define === "function" && define.amd ? (define("eve", [], function() { return eve; })) : (glob.eve = eve));
 	})(this);
 	
 	(function (glob, factory) {
 	    // AMD support
-	    if (true) {
+	    if (typeof define == "function" && define.amd) {
 	        // Define as an anonymous module
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__WEBPACK_LOCAL_MODULE_0__], __WEBPACK_AMD_DEFINE_RESULT__ = function (eve) {
+	        define(["eve"], function (eve) {
 	            return factory(glob, eve);
-	        }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	        });
 	    } else if (typeof exports != 'undefined') {
 	        // Next for Node.js or CommonJS
-	        var eve = require('eve');
+	        var eve = __webpack_require__(125);
 	        module.exports = factory(glob, eve);
 	    } else {
 	        // Browser globals (glob is window)
@@ -24886,917 +25787,420 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	
 	return Snap;
-	}));
-
-/***/ },
-/* 120 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(121);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(123)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!../node_modules/css-loader/index.js?sourceMap!../node_modules/sass-loader/index.js?sourceMap!./gantt.scss", function() {
-				var newContent = require("!!../node_modules/css-loader/index.js?sourceMap!../node_modules/sass-loader/index.js?sourceMap!./gantt.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 121 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(122)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, ".gantt .grid-background {\n  fill: none; }\n\n.gantt .grid-header {\n  fill: #ffffff;\n  stroke: #e0e0e0;\n  stroke-width: 1.4; }\n\n.gantt .grid-row {\n  fill: #ffffff; }\n\n.gantt .grid-row:nth-child(even) {\n  fill: #f5f5f5; }\n\n.gantt .row-line {\n  stroke: #ebeff2; }\n\n.gantt .tick {\n  stroke: #e0e0e0;\n  stroke-width: 0.2; }\n  .gantt .tick.thick {\n    stroke-width: 0.4; }\n\n.gantt .today-highlight {\n  fill: #fcf8e3;\n  opacity: 0.5; }\n\n.gantt #arrow {\n  fill: none;\n  stroke: #666;\n  stroke-width: 1.4; }\n\n.gantt .bar {\n  fill: #b8c2cc;\n  stroke: #8D99A6;\n  stroke-width: 0;\n  transition: stroke-width .3s ease; }\n\n.gantt .bar-progress {\n  fill: #a3a3ff; }\n\n.gantt .bar-invalid {\n  fill: transparent;\n  stroke: #8D99A6;\n  stroke-width: 1;\n  stroke-dasharray: 5; }\n  .gantt .bar-invalid ~ .bar-label {\n    fill: #555; }\n\n.gantt .bar-label {\n  fill: #fff;\n  dominant-baseline: central;\n  text-anchor: middle;\n  font-size: 12px;\n  font-weight: lighter;\n  letter-spacing: 0.8px; }\n  .gantt .bar-label.big {\n    fill: #555;\n    text-anchor: start; }\n\n.gantt .handle {\n  fill: #ddd;\n  cursor: ew-resize;\n  opacity: 0;\n  visibility: hidden;\n  transition: opacity .3s ease; }\n\n.gantt .bar-wrapper {\n  cursor: pointer; }\n  .gantt .bar-wrapper:hover .bar {\n    stroke-width: 2; }\n  .gantt .bar-wrapper:hover .handle {\n    visibility: visible;\n    opacity: 1; }\n  .gantt .bar-wrapper.active .bar {\n    stroke-width: 2; }\n\n.gantt .lower-text, .gantt .upper-text {\n  font-size: 12px;\n  text-anchor: middle; }\n\n.gantt .upper-text {\n  fill: #555; }\n\n.gantt .lower-text {\n  fill: #333; }\n\n.gantt #details .details-container {\n  background: #fff;\n  display: inline-block;\n  padding: 12px; }\n  .gantt #details .details-container h5, .gantt #details .details-container p {\n    margin: 0; }\n  .gantt #details .details-container h5 {\n    font-size: 12px;\n    font-weight: bold;\n    margin-bottom: 10px;\n    color: #555; }\n  .gantt #details .details-container p {\n    font-size: 12px;\n    margin-bottom: 6px;\n    color: #666; }\n  .gantt #details .details-container p:last-child {\n    margin-bottom: 0; }\n\n.gantt .hide {\n  display: none; }\n", "", {"version":3,"sources":["/home/heidar/projects/gantt-fork/src/src/gantt.scss"],"names":[],"mappings":"AAYA;EAGE,WAAU,EACV;;AAJF;EAME,cAAa;EACb,gBAjBoB;EAkBpB,kBAAiB,EACjB;;AATF;EAWE,cAAa,EACb;;AAZF;EAcE,cAvBgB,EAwBhB;;AAfF;EAiBE,gBAzB0B,EA0B1B;;AAlBF;EAoBE,gBA9BoB;EA+BpB,kBAAiB,EAIjB;EAzBF;IAuBG,kBAAiB,EACjB;;AAxBH;EA2BE,cAlCoB;EAmCpB,aAAY,EACZ;;AA7BF;EAgCE,WAAU;EACV,aAvCe;EAwCf,kBAAiB,EACjB;;AAnCF;EAsCE,cAlDiB;EAmDjB,gBAlDkB;EAmDlB,gBAAe;EACf,kCAAiC,EACjC;;AA1CF;EA4CE,cA/CY,EAgDZ;;AA7CF;EA+CE,kBAAiB;EACjB,gBA3DkB;EA4DlB,gBAAe;EACf,oBAAmB,EAKnB;EAvDF;IAqDG,WA1Dc,EA2Dd;;AAtDH;EAyDE,WAAU;EACV,2BAA0B;EAC1B,oBAAmB;EACnB,gBAAe;EACf,qBAAoB;EACpB,sBAAqB,EAMrB;EApEF;IAiEG,WAtEc;IAuEd,mBAAkB,EAClB;;AAnEH;EAuEE,WAzEiB;EA0EjB,kBAAiB;EACjB,WAAU;EACV,mBAAkB;EAClB,6BAA4B,EAC5B;;AA5EF;EA+EE,gBAAe,EAkBf;EAjGF;IAmFI,gBAAe,EACf;EApFJ;IAuFI,oBAAmB;IACnB,WAAU,EACV;EAzFJ;IA8FI,gBAAe,EACf;;AA/FJ;EAoGE,gBAAe;EACf,oBAAmB,EACnB;;AAtGF;EAwGE,WA7Ge,EA8Gf;;AAzGF;EA2GE,WA/Ge,EAgHf;;AA5GF;EA+GE,iBAAgB;EAChB,sBAAqB;EACrB,cAAa,EAsBb;EAvIF;IAoHG,UAAS,EACT;EArHH;IAwHG,gBAAe;IACf,kBAAiB;IACjB,oBAAmB;IACnB,YAhIc,EAiId;EA5HH;IA+HG,gBAAe;IACf,mBAAkB;IAClB,YAvIc,EAwId;EAlIH;IAqIG,iBAAgB,EAChB;;AAtIH;EA0IE,cAAa,EACb","file":"gantt.scss","sourcesContent":["$bar-color: #b8c2cc;\n$bar-stroke: #8D99A6;\n$border-color: #e0e0e0;\n$light-bg: #f5f5f5;\n$light-border-color: #ebeff2;\n$light-yellow: #fcf8e3;\n$text-muted: #666;\n$text-light: #555;\n$text-color: #333;\n$blue: #a3a3ff;\n$handle-color: #ddd;\n\n.gantt {\n\n\t.grid-background {\n\t\tfill: none;\n\t}\n\t.grid-header {\n\t\tfill: #ffffff;\n\t\tstroke: $border-color;\n\t\tstroke-width: 1.4;\n\t}\n\t.grid-row {\n\t\tfill: #ffffff;\n\t}\n\t.grid-row:nth-child(even) {\n\t\tfill: $light-bg;\n\t}\n\t.row-line {\n\t\tstroke: $light-border-color;\n\t}\n\t.tick {\n\t\tstroke: $border-color;\n\t\tstroke-width: 0.2;\n\t\t&.thick {\n\t\t\tstroke-width: 0.4;\n\t\t}\n\t}\n\t.today-highlight {\n\t\tfill: $light-yellow;\n\t\topacity: 0.5;\n\t}\n\n\t#arrow {\n\t\tfill: none;\n\t\tstroke: $text-muted;\n\t\tstroke-width: 1.4;\n\t}\n\n\t.bar {\n\t\tfill: $bar-color;\n\t\tstroke: $bar-stroke;\n\t\tstroke-width: 0;\n\t\ttransition: stroke-width .3s ease;\n\t}\n\t.bar-progress {\n\t\tfill: $blue;\n\t}\n\t.bar-invalid {\n\t\tfill: transparent;\n\t\tstroke: $bar-stroke;\n\t\tstroke-width: 1;\n\t\tstroke-dasharray: 5;\n\n\t\t&~.bar-label {\n\t\t\tfill: $text-light;\n\t\t}\n\t}\n\t.bar-label {\n\t\tfill: #fff;\n\t\tdominant-baseline: central;\n\t\ttext-anchor: middle;\n\t\tfont-size: 12px;\n\t\tfont-weight: lighter;\n\t\tletter-spacing: 0.8px;\n\n\t\t&.big {\n\t\t\tfill: $text-light;\n\t\t\ttext-anchor: start;\n\t\t}\n\t}\n\n\t.handle {\n\t\tfill: $handle-color;\n\t\tcursor: ew-resize;\n\t\topacity: 0;\n\t\tvisibility: hidden;\n\t\ttransition: opacity .3s ease;\n\t}\n\n\t.bar-wrapper {\n\t\tcursor: pointer;\n\n\t\t&:hover {\n\t\t\t.bar {\n\t\t\t\tstroke-width: 2;\n\t\t\t}\n\n\t\t\t.handle {\n\t\t\t\tvisibility: visible;\n\t\t\t\topacity: 1;\n\t\t\t}\n\t\t}\n\n\t\t&.active {\n\t\t\t.bar {\n\t\t\t\tstroke-width: 2;\n\t\t\t}\n\t\t}\n\t}\n\n\t.lower-text, .upper-text {\n\t\tfont-size: 12px;\n\t\ttext-anchor: middle;\n\t}\n\t.upper-text {\n\t\tfill: $text-light;\n\t}\n\t.lower-text {\n\t\tfill: $text-color;\n\t}\n\n\t#details .details-container {\n\t\tbackground: #fff;\n\t\tdisplay: inline-block;\n\t\tpadding: 12px;\n\n\t\th5, p {\n\t\t\tmargin: 0;\n\t\t}\n\n\t\th5 {\n\t\t\tfont-size: 12px;\n\t\t\tfont-weight: bold;\n\t\t\tmargin-bottom: 10px;\n\t\t\tcolor: $text-light;\n\t\t}\n\n\t\tp {\n\t\t\tfont-size: 12px;\n\t\t\tmargin-bottom: 6px;\n\t\t\tcolor: $text-muted;\n\t\t}\n\n\t\tp:last-child {\n\t\t\tmargin-bottom: 0;\n\t\t}\n\t}\n\n\t.hide {\n\t\tdisplay: none;\n\t}\n}"],"sourceRoot":""}]);
-	
-	// exports
-
-
-/***/ },
-/* 122 */
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-	
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-	
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ },
-/* 123 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-	
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-	
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-	
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-	
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-	
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-	
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-	
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-	
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-	
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-	
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-	
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-	
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-	
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-	
-		update(obj);
-	
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-	
-	var replaceText = (function () {
-		var textStore = [];
-	
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-	
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-	
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-	
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-	
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-	
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-	
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-	
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-	
-		var blob = new Blob([css], { type: "text/css" });
-	
-		var oldSrc = linkElement.href;
-	
-		linkElement.href = URL.createObjectURL(blob);
-	
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 124 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	exports.default = Bar;
-	
-	var _snapsvg = __webpack_require__(119);
-	
-	var _snapsvg2 = _interopRequireDefault(_snapsvg);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	/*
-		Class: Bar
-	
-		Opts:
-			gt: Gantt object
-			task: task object
-	*/
-	
-	function Bar(gt, task) {
-	
-		var self = {};
-		function init() {
-			set_defaults();
-			prepare();
-			draw();
-			bind();
-		}
-	
-		function set_defaults() {
-			self.action_completed = false;
-			self.task = task;
-		}
-	
-		function prepare() {
-			prepare_values();
-			prepare_plugins();
-		}
-	
-		function prepare_values() {
-			self.invalid = self.task.invalid;
-			self.height = gt.config.bar.height;
-			self.x = compute_x();
-			self.y = compute_y();
-			self.corner_radius = 3;
-			self.duration = (self.task._end.diff(self.task._start, 'hours') + 24) / gt.config.step;
-			self.width = gt.config.column_width * self.duration;
-			self.progress_width = gt.config.column_width * self.duration * (self.task.progress / 100) || 0;
-			self.group = gt.canvas.group().addClass('bar-wrapper').addClass(self.task.custom_class || '');
-			self.bar_group = gt.canvas.group().addClass('bar-group').appendTo(self.group);
-			self.handle_group = gt.canvas.group().addClass('handle-group').appendTo(self.group);
-		}
-	
-		function prepare_plugins() {
-			_snapsvg2.default.plugin(function (Snap, Element, Paper, global, Fragment) {
-				Element.prototype.getX = function () {
-					return +this.attr('x');
-				};
-				Element.prototype.getY = function () {
-					return +this.attr('y');
-				};
-				Element.prototype.getWidth = function () {
-					return +this.attr('width');
-				};
-				Element.prototype.getHeight = function () {
-					return +this.attr('height');
-				};
-				Element.prototype.getEndX = function () {
-					return this.getX() + this.getWidth();
-				};
-			});
-		}
-	
-		function draw() {
-			draw_bar();
-			draw_progress_bar();
-			draw_label();
-			draw_resize_handles();
-		}
-	
-		function draw_bar() {
-			self.$bar = gt.canvas.rect(self.x, self.y, self.width, self.height, self.corner_radius, self.corner_radius).addClass('bar').appendTo(self.bar_group);
-			if (self.invalid) {
-				self.$bar.addClass('bar-invalid');
-			}
-		}
-	
-		function draw_progress_bar() {
-			if (self.invalid) return;
-			self.$bar_progress = gt.canvas.rect(self.x, self.y, self.progress_width, self.height, self.corner_radius, self.corner_radius).addClass('bar-progress').appendTo(self.bar_group);
-		}
-	
-		function draw_label() {
-			gt.canvas.text(self.x + self.width / 2, self.y + self.height / 2, self.task.name).addClass('bar-label').appendTo(self.bar_group);
-			update_label_position();
-		}
-	
-		function draw_resize_handles() {
-			if (self.invalid || self.task.isParent) return;
-	
-			var bar = self.$bar,
-			    handle_width = 8;
-	
-			gt.canvas.rect(bar.getX() + bar.getWidth() - 9, bar.getY() + 1, handle_width, self.height - 2, self.corner_radius, self.corner_radius).addClass('handle right').appendTo(self.handle_group);
-			gt.canvas.rect(bar.getX() + 1, bar.getY() + 1, handle_width, self.height - 2, self.corner_radius, self.corner_radius).addClass('handle left').appendTo(self.handle_group);
-	
-			if (self.task.progress && self.task.progress < 100) {
-				gt.canvas.polygon(get_progress_polygon_points()).addClass('handle progress').appendTo(self.handle_group);
-			}
-		}
-	
-		function get_progress_polygon_points() {
-			var bar_progress = self.$bar_progress;
-			return [bar_progress.getEndX() - 5, bar_progress.getY() + bar_progress.getHeight(), bar_progress.getEndX() + 5, bar_progress.getY() + bar_progress.getHeight(), bar_progress.getEndX(), bar_progress.getY() + bar_progress.getHeight() - 8.66];
-		}
-	
-		function bind() {
-			if (self.invalid || self.task.isParent) return;
-			setup_click_event();
-			show_details();
-			bind_resize();
-			bind_drag();
-			bind_resize_progress();
-		}
-	
-		function show_details() {
-			var popover_group = gt.element_groups.details;
-			self.details_box = popover_group.select('.details-wrapper[data-task=\'' + self.task.id + '\']');
-	
-			if (!self.details_box) {
-				self.details_box = gt.canvas.group().addClass('details-wrapper hide').attr('data-task', self.task.id).appendTo(popover_group);
-	
-				render_details();
-	
-				var f = gt.canvas.filter(_snapsvg2.default.filter.shadow(0, 1, 1, '#666', 0.6));
-				self.details_box.attr({
-					filter: f
-				});
-			}
-	
-			self.group.click(function (e) {
-				if (self.action_completed) {
-					// just finished a move action, wait for a few seconds
-					return;
-				}
-				popover_group.selectAll('.details-wrapper').forEach(function (el) {
-					return el.addClass('hide');
-				});
-				self.details_box.removeClass('hide');
-			});
-		}
-	
-		function render_details() {
-			var _get_details_position = get_details_position(),
-			    x = _get_details_position.x,
-			    y = _get_details_position.y;
-	
-			self.details_box.transform('t' + x + ',' + y);
-			self.details_box.clear();
-	
-			var html = get_details_html();
-			var foreign_object = _snapsvg2.default.parse('<foreignObject width="5000" height="2000">\n\t\t\t\t<body xmlns="http://www.w3.org/1999/xhtml">\n\t\t\t\t\t' + html + '\n\t\t\t\t</body>\n\t\t\t\t</foreignObject>');
-			self.details_box.append(foreign_object);
-		}
-	
-		function get_details_html() {
-	
-			// custom html in config
-			if (gt.config.custom_popup_html) {
-				var _html = gt.config.custom_popup_html;
-				if (typeof _html === 'string') {
-					return _html;
-				}
-				if (isFunction(_html)) {
-					return _html(task);
-				}
-			}
-	
-			var start_date = self.task._start.format('MMM D');
-			var end_date = self.task._end.format('MMM D');
-			var heading = self.task.name + ': ' + start_date + ' - ' + end_date;
-	
-			var line_1 = 'Duration: ' + self.duration + ' days';
-			var line_2 = self.task.progress ? 'Progress: ' + self.task.progress : null;
-	
-			var html = '\n\t\t\t<div class="details-container">\n\t\t\t\t<h5>' + heading + '</h5>\n\t\t\t\t<p>' + line_1 + '</p>\n\t\t\t\t' + (line_2 ? '<p>' + line_2 + '</p>' : '') + '\n\t\t\t</div>\n\t\t';
-			return html;
-		}
-	
-		function get_details_position() {
-			return {
-				x: self.$bar.getEndX() + 2,
-				y: self.$bar.getY() - 10
-			};
-		}
-	
-		function bind_resize() {
-			var _get_handles = get_handles(),
-			    left = _get_handles.left,
-			    right = _get_handles.right;
-	
-			left.drag(onmove_left, onstart, onstop_left);
-			right.drag(onmove_right, onstart, onstop_right);
-	
-			function onmove_right(dx, dy) {
-				onmove_handle_right(dx, dy);
-			}
-			function onstop_right() {
-				onstop_handle_right();
-			}
-	
-			function onmove_left(dx, dy) {
-				onmove_handle_left(dx, dy);
-			}
-			function onstop_left() {
-				onstop_handle_left();
-			}
-		}
-	
-		function get_handles() {
-			return {
-				left: self.handle_group.select('.handle.left'),
-				right: self.handle_group.select('.handle.right')
-			};
-		}
-	
-		function bind_drag() {
-			self.bar_group.drag(onmove, onstart, onstop);
-		}
-	
-		function bind_resize_progress() {
-			var bar = self.$bar,
-			    bar_progress = self.$bar_progress,
-			    handle = self.group.select('.handle.progress');
-			handle && handle.drag(on_move, on_start, on_stop);
-	
-			function on_move(dx, dy) {
-				if (dx > bar_progress.max_dx) {
-					dx = bar_progress.max_dx;
-				}
-				if (dx < bar_progress.min_dx) {
-					dx = bar_progress.min_dx;
-				}
-	
-				bar_progress.attr('width', bar_progress.owidth + dx);
-				handle.attr('points', get_progress_polygon_points());
-				bar_progress.finaldx = dx;
-			}
-			function on_stop() {
-				if (!bar_progress.finaldx) return;
-				progress_changed();
-				set_action_completed();
-			}
-			function on_start() {
-				bar_progress.finaldx = 0;
-				bar_progress.owidth = bar_progress.getWidth();
-				bar_progress.min_dx = -bar_progress.getWidth();
-				bar_progress.max_dx = bar.getWidth() - bar_progress.getWidth();
-			}
-		}
-	
-		function onstart() {
-			var bar = self.$bar;
-			bar.ox = bar.getX();
-			bar.oy = bar.getY();
-			bar.owidth = bar.getWidth();
-			bar.finaldx = 0;
-			run_method_for_dependencies('onstart');
-		}
-		self.onstart = onstart;
-	
-		function onmove(dx, dy) {
-			console.log(222);
-			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
-			update_bar_position({ x: bar.ox + bar.finaldx });
-			run_method_for_dependencies('onmove', [dx, dy]);
-		}
-		self.onmove = onmove;
-	
-		function onstop() {
-			var bar = self.$bar;
-			if (!bar.finaldx) return;
-			date_changed();
-			set_action_completed();
-			run_method_for_dependencies('onstop');
-			self.task.parent.gantt.refresh();
-		}
-		self.onstop = onstop;
-	
-		function onmove_handle_left(dx, dy) {
-			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
-			update_bar_position({
-				x: bar.ox + bar.finaldx,
-				width: bar.owidth - bar.finaldx
-			});
-			run_method_for_dependencies('onmove', [dx, dy]);
-		}
-		self.onmove_handle_left = onmove_handle_left;
-	
-		function onstop_handle_left() {
-			var bar = self.$bar;
-			if (bar.finaldx) date_changed();
-			set_action_completed();
-			run_method_for_dependencies('onstop');
-			self.task.parent.gantt.refresh();
-		}
-		self.onstop_handle_left = onstop_handle_left;
-	
-		function run_method_for_dependencies(fn, args) {
-			var dm = gt.dependency_map;
-			if (dm[self.task.id]) {
-				var _iteratorNormalCompletion = true;
-				var _didIteratorError = false;
-				var _iteratorError = undefined;
-	
-				try {
-					for (var _iterator = dm[self.task.id][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-						var deptask = _step.value;
-	
-						var dt = gt.get_bar(deptask);
-						dt[fn].apply(dt, args);
-					}
-				} catch (err) {
-					_didIteratorError = true;
-					_iteratorError = err;
-				} finally {
-					try {
-						if (!_iteratorNormalCompletion && _iterator.return) {
-							_iterator.return();
-						}
-					} finally {
-						if (_didIteratorError) {
-							throw _iteratorError;
-						}
-					}
-				}
-			}
-		}
-	
-		function onmove_handle_right(dx, dy) {
-			var bar = self.$bar;
-			bar.finaldx = get_snap_position(dx);
-			update_bar_position({ width: bar.owidth + bar.finaldx });
-		}
-	
-		function onstop_handle_right() {
-			var bar = self.$bar;
-			if (bar.finaldx) date_changed();
-			set_action_completed();
-			self.task.parent.gantt.refresh();
-		}
-	
-		function update_bar_position(_ref) {
-			var _ref$x = _ref.x,
-			    x = _ref$x === undefined ? null : _ref$x,
-			    _ref$width = _ref.width,
-			    width = _ref$width === undefined ? null : _ref$width;
-	
-			var bar = self.$bar;
-			if (x) {
-				// get all x values of parent task
-				var xs = task.dependencies.map(function (dep) {
-					return gt.get_bar(dep).$bar.getX();
-				});
-				// child task must not go before parent
-				var valid_x = xs.reduce(function (prev, curr) {
-					return x >= curr;
-				}, x);
-				if (!valid_x) {
-					width = null;
-					return;
-				}
-				update_attr(bar, 'x', x);
-			}
-			if (width && width >= gt.config.column_width) {
-				update_attr(bar, 'width', width);
-			}
-			update_label_position();
-			update_handle_position();
-			update_progressbar_position();
-			update_arrow_position();
-			update_details_position();
-		}
-	
-		function setup_click_event() {
-			self.group.click(function () {
-				if (self.action_completed) {
-					// just finished a move action, wait for a few seconds
-					return;
-				}
-				if (self.group.hasClass('active')) {
-					gt.trigger_event('click', [self.task]);
-				}
-				gt.unselect_all();
-				self.group.toggleClass('active');
-			});
-		}
-	
-		function date_changed() {
-			var _compute_start_end_da = compute_start_end_date(),
-			    new_start_date = _compute_start_end_da.new_start_date,
-			    new_end_date = _compute_start_end_da.new_end_date;
-	
-			self.task._start = new_start_date;
-			self.task._end = new_end_date;
-			self.task.start = new Date(new_start_date._d);
-			self.task.end = new Date(new_end_date._d);
-			render_details();
-			gt.trigger_event('date_change', [self.task, new_start_date, new_end_date]);
-		}
-	
-		function progress_changed() {
-			var new_progress = compute_progress();
-			self.task.progress = new_progress;
-			render_details();
-			gt.trigger_event('progress_change', [self.task, new_progress]);
-		}
-	
-		function set_action_completed() {
-			self.action_completed = true;
-			setTimeout(function () {
-				return self.action_completed = false;
-			}, 2000);
-		}
-	
-		function compute_start_end_date() {
-			var bar = self.$bar;
-			var x_in_units = bar.getX() / gt.config.column_width;
-			var new_start_date = gt.gantt_start.clone().add(x_in_units * gt.config.step, 'hours');
-			var width_in_units = bar.getWidth() / gt.config.column_width;
-			var new_end_date = new_start_date.clone().add(width_in_units * gt.config.step, 'hours');
-			return { new_start_date: new_start_date, new_end_date: new_end_date };
-		}
-	
-		function compute_progress() {
-			var progress = self.$bar_progress.getWidth() / self.$bar.getWidth() * 100;
-			return parseInt(progress, 10);
-		}
-	
-		function compute_x() {
-			var x = self.task._start.diff(gt.gantt_start, 'hours') / gt.config.step * gt.config.column_width;
-	
-			if (gt.view_is('Month')) {
-				x = self.task._start.diff(gt.gantt_start, 'days') * gt.config.column_width / 30;
-			}
-			return x;
-		}
-	
-		function compute_y() {
-			return gt.config.header_height + gt.config.padding + self.task._index * (self.height + gt.config.padding);
-		}
-	
-		function get_snap_position(dx) {
-			var odx = dx,
-			    rem = void 0,
-			    position = void 0;
-	
-			if (gt.view_is('Week')) {
-				rem = dx % (gt.config.column_width / 7);
-				position = odx - rem + (rem < gt.config.column_width / 14 ? 0 : gt.config.column_width / 7);
-			} else if (gt.view_is('Month')) {
-				rem = dx % (gt.config.column_width / 30);
-				position = odx - rem + (rem < gt.config.column_width / 60 ? 0 : gt.config.column_width / 30);
-			} else {
-				rem = dx % gt.config.column_width;
-				position = odx - rem + (rem < gt.config.column_width / 2 ? 0 : gt.config.column_width);
-			}
-			return position;
-		}
-	
-		function update_attr(element, attr, value) {
-			value = +value;
-			if (!isNaN(value)) {
-				element.attr(attr, value);
-			}
-			return element;
-		}
-	
-		function update_progressbar_position() {
-			self.$bar_progress.attr('x', self.$bar.getX());
-			self.$bar_progress.attr('width', self.$bar.getWidth() * (self.task.progress / 100));
-		}
-	
-		function update_label_position() {
-			var bar = self.$bar,
-			    label = self.group.select('.bar-label');
-			if (label.getBBox().width > bar.getWidth()) {
-				label.addClass('big').attr('x', bar.getX() + bar.getWidth() + 5);
-			} else {
-				label.removeClass('big').attr('x', bar.getX() + bar.getWidth() / 2);
-			}
-		}
-	
-		function update_handle_position() {
-			var bar = self.$bar;
-			self.handle_group.select('.handle.left').attr({
-				'x': bar.getX() + 1
-			});
-			self.handle_group.select('.handle.right').attr({
-				'x': bar.getEndX() - 9
-			});
-			var handle = self.group.select('.handle.progress');
-			handle && handle.attr('points', get_progress_polygon_points());
-		}
-	
-		function update_arrow_position() {
-			var _iteratorNormalCompletion2 = true;
-			var _didIteratorError2 = false;
-			var _iteratorError2 = undefined;
-	
-			try {
-				for (var _iterator2 = self.arrows[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-					var arrow = _step2.value;
-	
-					arrow.update();
-				}
-			} catch (err) {
-				_didIteratorError2 = true;
-				_iteratorError2 = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion2 && _iterator2.return) {
-						_iterator2.return();
-					}
-				} finally {
-					if (_didIteratorError2) {
-						throw _iteratorError2;
-					}
-				}
-			}
-		}
-	
-		function update_details_position() {
-			var _get_details_position2 = get_details_position(),
-			    x = _get_details_position2.x,
-			    y = _get_details_position2.y;
-	
-			self.details_box && self.details_box.transform('t' + x + ',' + y);
-		}
-	
-		function isFunction(functionToCheck) {
-			var getType = {};
-			return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
-		}
-	
-		init();
-	
-		return self;
-	}
-	module.exports = exports['default'];
+	}));}).call(windowShim, windowShim);
+	module.exports = windowShim["Snap"];
 
 /***/ },
 /* 125 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
+	// 
+	// Licensed under the Apache License, Version 2.0 (the "License");
+	// you may not use this file except in compliance with the License.
+	// You may obtain a copy of the License at
+	// 
+	// http://www.apache.org/licenses/LICENSE-2.0
+	// 
+	// Unless required by applicable law or agreed to in writing, software
+	// distributed under the License is distributed on an "AS IS" BASIS,
+	// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	// See the License for the specific language governing permissions and
+	// limitations under the License.
+	// ┌────────────────────────────────────────────────────────────┐ \\
+	// │ Eve 0.4.2 - JavaScript Events Library                      │ \\
+	// ├────────────────────────────────────────────────────────────┤ \\
+	// │ Author Dmitry Baranovskiy (http://dmitry.baranovskiy.com/) │ \\
+	// └────────────────────────────────────────────────────────────┘ \\
+	
+	(function (glob) {
+	    var version = "0.4.2",
+	        has = "hasOwnProperty",
+	        separator = /[\.\/]/,
+	        comaseparator = /\s*,\s*/,
+	        wildcard = "*",
+	        fun = function () {},
+	        numsort = function (a, b) {
+	            return a - b;
+	        },
+	        current_event,
+	        stop,
+	        events = {n: {}},
+	        firstDefined = function () {
+	            for (var i = 0, ii = this.length; i < ii; i++) {
+	                if (typeof this[i] != "undefined") {
+	                    return this[i];
+	                }
+	            }
+	        },
+	        lastDefined = function () {
+	            var i = this.length;
+	            while (--i) {
+	                if (typeof this[i] != "undefined") {
+	                    return this[i];
+	                }
+	            }
+	        },
+	    /*\
+	     * eve
+	     [ method ]
+	
+	     * Fires event with given `name`, given scope and other parameters.
+	
+	     > Arguments
+	
+	     - name (string) name of the *event*, dot (`.`) or slash (`/`) separated
+	     - scope (object) context for the event handlers
+	     - varargs (...) the rest of arguments will be sent to event handlers
+	
+	     = (object) array of returned values from the listeners. Array has two methods `.firstDefined()` and `.lastDefined()` to get first or last not `undefined` value.
+	    \*/
+	        eve = function (name, scope) {
+	            name = String(name);
+	            var e = events,
+	                oldstop = stop,
+	                args = Array.prototype.slice.call(arguments, 2),
+	                listeners = eve.listeners(name),
+	                z = 0,
+	                f = false,
+	                l,
+	                indexed = [],
+	                queue = {},
+	                out = [],
+	                ce = current_event,
+	                errors = [];
+	            out.firstDefined = firstDefined;
+	            out.lastDefined = lastDefined;
+	            current_event = name;
+	            stop = 0;
+	            for (var i = 0, ii = listeners.length; i < ii; i++) if ("zIndex" in listeners[i]) {
+	                indexed.push(listeners[i].zIndex);
+	                if (listeners[i].zIndex < 0) {
+	                    queue[listeners[i].zIndex] = listeners[i];
+	                }
+	            }
+	            indexed.sort(numsort);
+	            while (indexed[z] < 0) {
+	                l = queue[indexed[z++]];
+	                out.push(l.apply(scope, args));
+	                if (stop) {
+	                    stop = oldstop;
+	                    return out;
+	                }
+	            }
+	            for (i = 0; i < ii; i++) {
+	                l = listeners[i];
+	                if ("zIndex" in l) {
+	                    if (l.zIndex == indexed[z]) {
+	                        out.push(l.apply(scope, args));
+	                        if (stop) {
+	                            break;
+	                        }
+	                        do {
+	                            z++;
+	                            l = queue[indexed[z]];
+	                            l && out.push(l.apply(scope, args));
+	                            if (stop) {
+	                                break;
+	                            }
+	                        } while (l)
+	                    } else {
+	                        queue[l.zIndex] = l;
+	                    }
+	                } else {
+	                    out.push(l.apply(scope, args));
+	                    if (stop) {
+	                        break;
+	                    }
+	                }
+	            }
+	            stop = oldstop;
+	            current_event = ce;
+	            return out;
+	        };
+	        // Undocumented. Debug only.
+	        eve._events = events;
+	    /*\
+	     * eve.listeners
+	     [ method ]
+	
+	     * Internal method which gives you array of all event handlers that will be triggered by the given `name`.
+	
+	     > Arguments
+	
+	     - name (string) name of the event, dot (`.`) or slash (`/`) separated
+	
+	     = (array) array of event handlers
+	    \*/
+	    eve.listeners = function (name) {
+	        var names = name.split(separator),
+	            e = events,
+	            item,
+	            items,
+	            k,
+	            i,
+	            ii,
+	            j,
+	            jj,
+	            nes,
+	            es = [e],
+	            out = [];
+	        for (i = 0, ii = names.length; i < ii; i++) {
+	            nes = [];
+	            for (j = 0, jj = es.length; j < jj; j++) {
+	                e = es[j].n;
+	                items = [e[names[i]], e[wildcard]];
+	                k = 2;
+	                while (k--) {
+	                    item = items[k];
+	                    if (item) {
+	                        nes.push(item);
+	                        out = out.concat(item.f || []);
+	                    }
+	                }
+	            }
+	            es = nes;
+	        }
+	        return out;
+	    };
+	    
+	    /*\
+	     * eve.on
+	     [ method ]
+	     **
+	     * Binds given event handler with a given name. You can use wildcards “`*`” for the names:
+	     | eve.on("*.under.*", f);
+	     | eve("mouse.under.floor"); // triggers f
+	     * Use @eve to trigger the listener.
+	     **
+	     > Arguments
+	     **
+	     - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+	     - f (function) event handler function
+	     **
+	     = (function) returned function accepts a single numeric parameter that represents z-index of the handler. It is an optional feature and only used when you need to ensure that some subset of handlers will be invoked in a given order, despite of the order of assignment. 
+	     > Example:
+	     | eve.on("mouse", eatIt)(2);
+	     | eve.on("mouse", scream);
+	     | eve.on("mouse", catchIt)(1);
+	     * This will ensure that `catchIt` function will be called before `eatIt`.
+	     *
+	     * If you want to put your handler before non-indexed handlers, specify a negative value.
+	     * Note: I assume most of the time you don’t need to worry about z-index, but it’s nice to have this feature “just in case”.
+	    \*/
+	    eve.on = function (name, f) {
+	        name = String(name);
+	        if (typeof f != "function") {
+	            return function () {};
+	        }
+	        var names = name.split(comaseparator);
+	        for (var i = 0, ii = names.length; i < ii; i++) {
+	            (function (name) {
+	                var names = name.split(separator),
+	                    e = events,
+	                    exist;
+	                for (var i = 0, ii = names.length; i < ii; i++) {
+	                    e = e.n;
+	                    e = e.hasOwnProperty(names[i]) && e[names[i]] || (e[names[i]] = {n: {}});
+	                }
+	                e.f = e.f || [];
+	                for (i = 0, ii = e.f.length; i < ii; i++) if (e.f[i] == f) {
+	                    exist = true;
+	                    break;
+	                }
+	                !exist && e.f.push(f);
+	            }(names[i]));
+	        }
+	        return function (zIndex) {
+	            if (+zIndex == +zIndex) {
+	                f.zIndex = +zIndex;
+	            }
+	        };
+	    };
+	    /*\
+	     * eve.f
+	     [ method ]
+	     **
+	     * Returns function that will fire given event with optional arguments.
+	     * Arguments that will be passed to the result function will be also
+	     * concated to the list of final arguments.
+	     | el.onclick = eve.f("click", 1, 2);
+	     | eve.on("click", function (a, b, c) {
+	     |     console.log(a, b, c); // 1, 2, [event object]
+	     | });
+	     > Arguments
+	     - event (string) event name
+	     - varargs (…) and any other arguments
+	     = (function) possible event handler function
+	    \*/
+	    eve.f = function (event) {
+	        var attrs = [].slice.call(arguments, 1);
+	        return function () {
+	            eve.apply(null, [event, null].concat(attrs).concat([].slice.call(arguments, 0)));
+	        };
+	    };
+	    /*\
+	     * eve.stop
+	     [ method ]
+	     **
+	     * Is used inside an event handler to stop the event, preventing any subsequent listeners from firing.
+	    \*/
+	    eve.stop = function () {
+	        stop = 1;
+	    };
+	    /*\
+	     * eve.nt
+	     [ method ]
+	     **
+	     * Could be used inside event handler to figure out actual name of the event.
+	     **
+	     > Arguments
+	     **
+	     - subname (string) #optional subname of the event
+	     **
+	     = (string) name of the event, if `subname` is not specified
+	     * or
+	     = (boolean) `true`, if current event’s name contains `subname`
+	    \*/
+	    eve.nt = function (subname) {
+	        if (subname) {
+	            return new RegExp("(?:\\.|\\/|^)" + subname + "(?:\\.|\\/|$)").test(current_event);
+	        }
+	        return current_event;
+	    };
+	    /*\
+	     * eve.nts
+	     [ method ]
+	     **
+	     * Could be used inside event handler to figure out actual name of the event.
+	     **
+	     **
+	     = (array) names of the event
+	    \*/
+	    eve.nts = function () {
+	        return current_event.split(separator);
+	    };
+	    /*\
+	     * eve.off
+	     [ method ]
+	     **
+	     * Removes given function from the list of event listeners assigned to given name.
+	     * If no arguments specified all the events will be cleared.
+	     **
+	     > Arguments
+	     **
+	     - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+	     - f (function) event handler function
+	    \*/
+	    /*\
+	     * eve.unbind
+	     [ method ]
+	     **
+	     * See @eve.off
+	    \*/
+	    eve.off = eve.unbind = function (name, f) {
+	        if (!name) {
+	            eve._events = events = {n: {}};
+	            return;
+	        }
+	        var names = name.split(comaseparator);
+	        if (names.length > 1) {
+	            for (var i = 0, ii = names.length; i < ii; i++) {
+	                eve.off(names[i], f);
+	            }
+	            return;
+	        }
+	        names = name.split(separator);
+	        var e,
+	            key,
+	            splice,
+	            i, ii, j, jj,
+	            cur = [events];
+	        for (i = 0, ii = names.length; i < ii; i++) {
+	            for (j = 0; j < cur.length; j += splice.length - 2) {
+	                splice = [j, 1];
+	                e = cur[j].n;
+	                if (names[i] != wildcard) {
+	                    if (e[names[i]]) {
+	                        splice.push(e[names[i]]);
+	                    }
+	                } else {
+	                    for (key in e) if (e[has](key)) {
+	                        splice.push(e[key]);
+	                    }
+	                }
+	                cur.splice.apply(cur, splice);
+	            }
+	        }
+	        for (i = 0, ii = cur.length; i < ii; i++) {
+	            e = cur[i];
+	            while (e.n) {
+	                if (f) {
+	                    if (e.f) {
+	                        for (j = 0, jj = e.f.length; j < jj; j++) if (e.f[j] == f) {
+	                            e.f.splice(j, 1);
+	                            break;
+	                        }
+	                        !e.f.length && delete e.f;
+	                    }
+	                    for (key in e.n) if (e.n[has](key) && e.n[key].f) {
+	                        var funcs = e.n[key].f;
+	                        for (j = 0, jj = funcs.length; j < jj; j++) if (funcs[j] == f) {
+	                            funcs.splice(j, 1);
+	                            break;
+	                        }
+	                        !funcs.length && delete e.n[key].f;
+	                    }
+	                } else {
+	                    delete e.f;
+	                    for (key in e.n) if (e.n[has](key) && e.n[key].f) {
+	                        delete e.n[key].f;
+	                    }
+	                }
+	                e = e.n;
+	            }
+	        }
+	    };
+	    /*\
+	     * eve.once
+	     [ method ]
+	     **
+	     * Binds given event handler with a given name to only run once then unbind itself.
+	     | eve.once("login", f);
+	     | eve("login"); // triggers f
+	     | eve("login"); // no listeners
+	     * Use @eve to trigger the listener.
+	     **
+	     > Arguments
+	     **
+	     - name (string) name of the event, dot (`.`) or slash (`/`) separated, with optional wildcards
+	     - f (function) event handler function
+	     **
+	     = (function) same return function as @eve.on
+	    \*/
+	    eve.once = function (name, f) {
+	        var f2 = function () {
+	            eve.unbind(name, f2);
+	            return f.apply(this, arguments);
+	        };
+	        return eve.on(name, f2);
+	    };
+	    /*\
+	     * eve.version
+	     [ property (string) ]
+	     **
+	     * Current version of the library.
+	    \*/
+	    eve.version = version;
+	    eve.toString = function () {
+	        return "You are running Eve " + version;
+	    };
+	    (typeof module != "undefined" && module.exports) ? (module.exports = eve) : ( true ? (!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() { return eve; }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))) : (glob.eve = eve));
+	})(this);
+
+
+/***/ },
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25805,13 +26209,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		value: true
 	});
 	exports.default = Arrow;
-	
-	var _snapsvg = __webpack_require__(119);
-	
-	var _snapsvg2 = _interopRequireDefault(_snapsvg);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
+	var Snap = __webpack_require__(124);
 	/*
 		Class: Arrow
 		from_task ---> to_task
@@ -25856,7 +26254,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			self.curve_y = from_is_below_to ? -self.curve : self.curve;
 			self.offset = from_is_below_to ? self.end_y + gt.config.arrow.curve : self.end_y - gt.config.arrow.curve;
 	
-			self.path = _snapsvg2.default.format('M {start_x} {start_y} V {offset} ' + 'a {curve} {curve} 0 0 {clockwise} {curve} {curve_y} ' + 'L {end_x} {end_y} m -5 -5 l 5 5 l -5 5', {
+			self.path = Snap.format('M {start_x} {start_y} V {offset} ' + 'a {curve} {curve} 0 0 {clockwise} {curve} {curve_y} ' + 'L {end_x} {end_y} m -5 -5 l 5 5 l -5 5', {
 				start_x: self.start_x,
 				start_y: self.start_y,
 				end_x: self.end_x,
@@ -25868,7 +26266,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			});
 	
 			if (to_task.$bar.getX() < from_task.$bar.getX() + gt.config.padding) {
-				self.path = _snapsvg2.default.format('M {start_x} {start_y} v {down_1} ' + 'a {curve} {curve} 0 0 1 -{curve} {curve} H {left} ' + 'a {curve} {curve} 0 0 {clockwise} -{curve} {curve_y} V {down_2} ' + 'a {curve} {curve} 0 0 {clockwise} {curve} {curve_y} ' + 'L {end_x} {end_y} m -5 -5 l 5 5 l -5 5', {
+				self.path = Snap.format('M {start_x} {start_y} v {down_1} ' + 'a {curve} {curve} 0 0 1 -{curve} {curve} H {left} ' + 'a {curve} {curve} 0 0 {clockwise} -{curve} {curve_y} V {down_2} ' + 'a {curve} {curve} 0 0 {clockwise} {curve} {curve_y} ' + 'L {end_x} {end_y} m -5 -5 l 5 5 l -5 5', {
 					start_x: self.start_x,
 					start_y: self.start_y,
 					end_x: self.end_x,
