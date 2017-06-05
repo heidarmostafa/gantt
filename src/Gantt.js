@@ -1,6 +1,6 @@
 import moment from 'moment';
 var Snap = require('legacy-loader?exports=Snap!snapsvg');
-console.log('iiiii', Snap);
+var animateCss = require('animate.css-js');
 /**
  * Gantt:
  *    element: querySelector string, required
@@ -9,9 +9,12 @@ console.log('iiiii', Snap);
  *    config: configuration options, optional
  */
 import './gantt.scss';
+import '../node_modules/animate.css/animate.min.css';
 
 import Bar from './Bar';
 import Arrow from './Arrow';
+
+const animationSpeed = 500;
 
 export default function Gantt(element, tasks, config, lhsList) {
 
@@ -78,7 +81,6 @@ export default function Gantt(element, tasks, config, lhsList) {
         if(passedTasks) {
             tasks = passedTasks;
         }
-        console.log('getTasks', passedTasks);
         for (let t of tasks) {
             let parent = {
                 isParent: true,
@@ -112,7 +114,7 @@ export default function Gantt(element, tasks, config, lhsList) {
     }
 
     function refresh(updated_tasks) {
-        console.log('updated_tasks', updated_tasks);
+        document.getElementById('gantt').style.height = 'auto';
         reset_variables(updated_tasks);
         change_view_mode(self.config.view_mode);
     }
@@ -230,6 +232,7 @@ export default function Gantt(element, tasks, config, lhsList) {
 
     function clear() {
         self.canvas.clear();
+        self.lhsList.clear();
         self._bars = [];
         self._arrows = [];
     }
@@ -362,22 +365,238 @@ export default function Gantt(element, tasks, config, lhsList) {
 
         let row_y = self.config.header_height + self.config.padding / 2;
 
-        for (let task of self.tasks) { // eslint-disable-line
+        let currentParent;
+        let allParents = [];
+        let allCollapseIcons = [];
+        self.tasks.forEach(function (task, taskIndex) {
 
-            self.canvas.rect(0, row_y, row_width, row_height)
+            const r = self.canvas.rect(0, row_y, row_width, row_height)
                 .addClass('grid-row')
                 .appendTo(rows);
 
-            self.canvas.line(0, row_y + row_height, row_width, row_y + row_height)
+            const l = self.canvas.line(0, row_y + row_height, row_width, row_y + row_height)
                 .addClass('row-line')
                 .appendTo(lines);
 
-            self.canvas.text(task.isParent ? 5 : 25, row_y + row_height / 2, task.name)
+            const listText = self.canvas.text(task.isParent ? 25 : 40, row_y + row_height / 2, task.name)
                 .addClass(task.isParent ? 'parent-node-text' : 'child-node-text')
                 .appendTo(list);
+            if(task.isParent) {
+                listText.isParent = true;
+                r.isParent = true;
+                l.isParent = true;
+            }
+
+            // adding collapse button beside parents
+            const plusIcon = 'data:image/png;base64,' +
+                'iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAMAAABhEH5lAAA' +
+                'AUVBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
+                'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
+                'AAAAAAAAAAAAAAAAAAAAABcqRVCAAAAGnRSTlMAAQIDCw8U' +
+                'GCQ7QExQUVZea3iFq7LI5Pn7/QLH+QgAAABxSURBVBhXjdB' +
+                'JDoQwDADBZolJ2HeI//9QDhDIzAHRx5JlWQZs1YTqMgfSWX' +
+                '9y0O+Wp2zUnHUgLtMSbQEw3pymdSBRuaj5TkZEnDoRMYH8f' +
+                'ZR/mfq2/p+2Doivr5iWhCirlsIvXXs37DNQTNvzrbVPOQC+' +
+                'cwv2+7uJxAAAAABJRU5ErkJggg==';
+
+            const minusIcon = 'data:image/png;base64,iVBORw0KGgoAA' +
+                'AANSUhEUgAAABIAAAASCAMAAABhEH5lAAAAUVBMVEUAAAAA' +
+                'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
+                'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
+                'AAAAAAAABcqRVCAAAAGnRSTlMAAQIDCxgkO0BFTFBRVl5re' +
+                'IWrssjk6/n7/cxWl9oAAABjSURBVBhXldBLFkAwEAXRIoQg' +
+                'QohP73+hRonfhBreQZ93GtBNF2vrAsgnuVWB2zRnapSCMHB' +
+                'NSY3YGyHtm7rvZNIuE2lJo5Z/tz7Q2j+owc/ZVbRoyn3ubW' +
+                'rYJqD06/mt4HIOtB4KRXPAG/0AAAAASUVORK5CYII=';
+
+            if(task.isParent) {
+                allParents.push(task);
+                currentParent = task;
+                let animation = false;
+                let collapseIcon = self.canvas.image(minusIcon, 4, row_y + 7, 15, 15)
+                    .addClass('collapse-children')
+                    .appendTo(list)
+                    .click(function () {
+
+                        setTimeout(function () {
+                            let visibleHeight = 0;
+
+                            function hasClass(el, selector) {
+                                var className = ' ' + selector + ' ';
+
+                                if ((' ' + el.getAttribute('class') + ' ').replace(/[\n\t]/g, ' ').indexOf(className) > -1) {
+                                    return true;
+                                }
+                                return false;
+                            }
+
+                            [... document.getElementsByClassName('grid-row')].map(function (r) {
+                                if(r.style.display !== 'none' && !hasClass(r, 'fadeOutUp')) {
+                                    visibleHeight += Number(r.getAttribute('height'));
+                                }
+                            });
+                            document.getElementById('gantt').style.height = (visibleHeight + 60) + 'px';
+                        }, 1);
+
+                        if (animation) {
+                            return;
+                        }
+                        if (collapseIcon.collapseState === 'minus') {
+                            collapseIcon.attr({href: plusIcon});
+                            collapseIcon.collapseState = 'plus';
+                            let parentFound = false;
+                            for (let i = 0; i < allParents.length; ++i) {
+                                let p = allParents[i];
+                                if (p !== this.parentElm && parentFound) {
+                                    allCollapseIcons[i].attr({
+                                        y: Number(allCollapseIcons[i].attr('y')) - Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                    });
+                                    p.childItems.forEach(function (c) {
+                                        if(c.attr('y')) {
+                                            c.animate({
+                                                y: Number(c.attr('y')) - Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                            }, animationSpeed);
+                                        } else {
+                                            c.animate({
+                                                y1: Number(c.attr('y1')) - Number((((task.childItems.length) / 3) - 1) * self.config.column_width),
+                                                y2: Number(c.attr('y2')) - Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                            }, animationSpeed);
+                                        }
+                                    });
+                                    p.bars.forEach(function (br) {
+                                        br.$bar.animate({
+                                            y: Number(br.$bar.attr('y')) - Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                        }, animationSpeed);
+                                        br.$bar_progress.animate({
+                                            y: Number(br.$bar_progress.attr('y')) - Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                        }, animationSpeed);
+                                        br.$bar_text.animate({
+                                            y: Number(br.$bar_text.attr('y')) - Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                        }, animationSpeed);
+                                    });
+                                }
+                                if (p === this.parentElm) {
+                                    parentFound = true;
+                                }
+                            }
+                            ;
+                            task.childItems.forEach(function (ct, i) {
+                                if (!ct.isParent) {
+                                    animateCss.animate(ct.node, {
+                                        animationName: 'fadeOutUp',
+                                        duration: animationSpeed,
+                                        callbacks: [
+                                            function () {
+                                                ct.node.style.display = 'none';
+                                            }
+                                        ]
+                                    });
+                                }
+                            });
+                            for (let i = 0; i < self._bars.length; ++i) {
+                                let b = self._bars[i];
+                                if (b.task.isParent && i > taskIndex) {
+                                    break;
+                                } else if (i > taskIndex) {
+                                    animation = true;
+                                    animateCss.animate(b.bar_group.node, {
+                                        animationName: 'fadeOutUp',
+                                        duration: animationSpeed,
+                                        callbacks: [
+                                            function () {
+                                                b.bar_group.node.style.display = 'none';
+                                                animation = false;
+                                            }
+                                        ]
+                                    });
+                                }
+                            }
+                        } else {
+                            collapseIcon.attr({href: minusIcon});
+                            collapseIcon.collapseState = 'minus';
+
+                            let parentFound = false;
+                            for (let i = 0; i < allParents.length; ++i) {
+                                let p = allParents[i];
+                                if (p !== this.parentElm && parentFound) {
+                                    allCollapseIcons[i].attr({
+                                        y: Number(allCollapseIcons[i].attr('y')) + Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                    });
+                                    p.childItems.forEach(function (c) {
+                                        if(c.attr('y')) {
+                                            c.animate({
+                                                y: Number(c.attr('y')) + Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                            }, animationSpeed);
+                                        } else {
+                                            c.animate({
+                                                y1: Number(c.attr('y1')) + Number((((task.childItems.length) / 3) - 1) * self.config.column_width),
+                                                y2: Number(c.attr('y2')) + Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                            }, animationSpeed);
+                                        }
+                                    });
+                                    p.bars.forEach(function (br) {
+                                        br.$bar.animate({
+                                            y: Number(br.$bar.attr('y')) + Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                        }, animationSpeed);
+                                        br.$bar_progress.animate({
+                                            y: Number(br.$bar_progress.attr('y')) + Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                        }, animationSpeed);
+                                        br.$bar_text.animate({
+                                            y: Number(br.$bar_text.attr('y')) + Number((((task.childItems.length) / 3) - 1) * self.config.column_width)
+                                        }, animationSpeed);
+                                    });
+                                }
+                                if (p === this.parentElm) {
+                                    parentFound = true;
+                                }
+                            }
+                            ;
+
+                            task.childItems.forEach(function (ct, i) {
+                                if (!ct.isParent) {
+                                    ct.node.style.display = 'block';
+                                    animateCss.animate(ct.node, {
+                                        animationName: 'fadeInDown',
+                                        duration: animationSpeed,
+                                        callbacks: [
+                                            function () {
+                                                // nothing
+                                            }
+                                        ]
+                                    });
+                                }
+                            });
+                            for (let i = 0; i < self._bars.length; ++i) {
+                                let b = self._bars[i];
+                                if (b.task.isParent && i > taskIndex) {
+                                    break;
+                                } else if (i > taskIndex) {
+                                    animation = true;
+                                    b.bar_group.node.style.display = 'block';
+                                    animateCss.animate(b.bar_group.node, {
+                                        animationName: 'fadeInDown',
+                                        duration: animationSpeed,
+                                        callbacks: [
+                                            function () {
+                                                animation = false;
+                                            }
+                                        ]
+                                    });
+                                }
+                            }
+                        }
+                    });
+                collapseIcon.collapseState = 'minus';
+                collapseIcon.parentElm = currentParent;
+                allCollapseIcons.push(collapseIcon);
+            }
+            currentParent.childItems = currentParent.childItems || [];
+            currentParent.childItems.push(r);
+            currentParent.childItems.push(l);
+            currentParent.childItems.push(listText);
 
             row_y += self.config.bar.height + self.config.padding;
-        }
+        });
     }
 
     function make_grid_ticks() {
@@ -534,9 +753,15 @@ export default function Gantt(element, tasks, config, lhsList) {
 
     function make_bars() {
 
+        let currentParent;
         self._bars = self.tasks.map((task) => {
+            if(task.isParent) {
+                currentParent = task;
+            }
             const bar = Bar(self, task);
             self.element_groups.bar.add(bar.group);
+            currentParent.bars = currentParent.bars || [];
+            currentParent.bars.push(bar);
             return bar;
         });
     }

@@ -10,8 +10,25 @@ $text-color: #333;
 $blue: #a3a3ff;
 $handle-color: #ddd;
 
-.gantt {
+.animated {
+	-webkit-animation-duration: 0.5s !important;
+	animation-duration: 0.5s !important;
+	easing: linear !important;
+}
 
+.gantt-list {
+	image {
+		cursor: pointer;
+		opacity: 0.7;
+		transition: all 0.5s ease-in-out;
+		&:hover {
+			opacity: 0.9;
+		}
+	}
+}
+
+.gantt {
+	transition: height 0.5s ease-in-out;
 	.grid-background {
 		fill: none;
 	}

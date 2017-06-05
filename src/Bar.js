@@ -89,7 +89,7 @@ export default function Bar(gt, task) {
 	}
 
 	function draw_label() {
-		gt.canvas.text(self.x + self.width / 2,
+		self.$bar_text = gt.canvas.text(self.x + self.width / 2,
 			self.y + self.height / 2,
 			self.task.name)
 			.addClass('bar-label')
